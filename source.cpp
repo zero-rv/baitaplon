@@ -4,36 +4,70 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <utility>
+#include <fstream>
 using namespace std;
-
-// Cac ham su dung //
+//Ham su dung
 int Random(int min, int max);
-string taobiensoxe();
-int tien_xe(int secs);
-void input_time();
+string taoBiensoxe();
+bool isEmpty();
+void chiaKhu();
+void time();
+void ghiFile();
+void docFile();
 
-// Main //
-int main()
-{
-    cout << taobiensoxe() << endl;
-    input_time();
-    return 0;
-}
+//Struct 
 
-// Functions
+
 int Random(int min, int  max)
 {
     return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
 }
-
-string taobiensoxe()
+//Chia Khu
+string arr[3][3];
+bool isEmpty()
 {
-    // tao chuoi trung gian 
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (arr[i][j] == "")
+                return true;
+        }
+    }
+    return false;
+}
+void chiaKhu()
+{
+    cout << taoBiensoxe() << endl;
+    int i, j;
+    i = Random(0, 2);
+    j = Random(0, 2);
+    if (isEmpty())
+    {       
+        arr[i][j] = taoBiensoxe();
+        cout << "Gui xe thanh cong tai hang " << i << ", cot " << j << endl;
+    } 
+    else
+    {
+        cout << "Bai xe da day, khong the gui! \n";
+    }
+}
+// for (int i =0, i< n , i++)
+// pair < string n , int m > xe i = < taobiensoxe() , chia khu ()> 
+// string n :
+//{
+//  if string == xe i . first 
+// cout xe i . second 
+
+string taoBiensoxe()
+{
+    // tạo chuỗi   trung gian 
     const string chucai = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     string bienso;
-    // reset o nho cua chuoi
+    //thay đổi giá trị ngẫu nhiên của hàm random
     srand((unsigned int)time(NULL));
-    // tao chuoi
+    //tạo giá trị cho chuỗi 
     for (int i = 0; i < 8; i++)
     {
         if (i != 2)
@@ -47,7 +81,17 @@ string taobiensoxe()
     }
     return bienso;
 }
+void time()
+{
+    {
+        // tra ve date/time hien tai dua tren system hien tai
+        time_t hientai = time(0);
+        // chuyen doi hientai thanh dang chuoi
+        char* dt = ctime(&hientai);
 
+        cout << "Date va Time dang local la: " << dt << endl;
+    }
+}
 
 // Tinh tien xe //
 int sum = 50000, dem = -1;
@@ -61,25 +105,60 @@ int tien_xe(int secs)
     sum += dem * 30000;
     return sum;
 }
-
-// Chenh lech thoi gian //
-void input_time()
-{   
-    time_t now = time(0);
-    int hour, min, sec, date, month, year;
-    cout << "Nhap thoi gian xuat xe (gio, phut, giay, ngay, thang, nam)  ";
-    cin >> hour >> min >> sec >> date >> month >> year;
-
-    tm *customtime; //luu thoi gian bat ky
-    customtime->tm_hour = hour;
-    customtime->tm_min = min;
-    customtime->tm_sec = sec;
-    customtime->tm_mday = date;
-    customtime->tm_mon = month - 1; // 0 -> 11 nen phai lay month - 1
-    customtime->tm_year = year - 1900;
-
-    time_t custom; //chuyen thoi gian bat ky ve so giay
-    custom = mktime(customtime);
-    int chenh_lech = custom - now;
-    cout << "So tien phai tra: " << tien_xe(chenh_lech);
+void ghiFile()
+{
+    fstream btl;
+    btl.open("baitaplon.txt", ios::app);
+    btl << taoBiensoxe() << endl;
+    btl.close();
 }
+
+void docFile()
+{
+    string bienso, time;
+    fstream btl;
+    btl.open("baitaplon.txt");
+
+    btl >> bienso;
+    btl.ignore();
+    getline(btl, time);
+    cout << bienso << endl;
+    cout << time;
+
+    btl.close();
+}
+
+int main()
+{
+
+    int key, choice;
+    do
+    {
+        system("cls");
+        std::cout << "Moi chon option: ";
+        cin >> key;
+        switch (key)
+        {
+        case 1: // Nhap xe
+            chiaKhu();
+            time();
+            
+            break;
+        case 2:
+            time();
+            docFile();
+            break;
+        default:
+            cout << "Khong co option nay\n";
+        }
+        cout << "Tiep tuc? (1/0): ";
+        cin >> choice;
+        if (!choice)
+        {
+            cout << "Bye Bye!";
+            break;
+        }
+    } while (key != 0);
+    return 0;
+}
+// option 1: lấy thời gian tạo biển số , chia khu , sau đó ghi vô file để lưu ,option 2 : lấy thời gian ghi vô file tính tiền ghi tiêrnf vô file , option 3 đọc file 
