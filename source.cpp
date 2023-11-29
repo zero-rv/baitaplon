@@ -11,7 +11,7 @@ using namespace std;
 int Random(int min, int max);
 string taoBiensoxe();
 bool isEmpty();
-void chiaKhu();
+void auto_input_arr();
 void time();
 void ghiFile();
 void docFile();
@@ -36,20 +36,39 @@ bool isEmpty()
     }
     return false;
 }
-void chiaKhu()
+void auto_input_arr()
 {
-    cout << taoBiensoxe() << endl;
     int i, j;
+    retry:
     i = Random(0, 2);
     j = Random(0, 2);
     if (isEmpty())
-    {       
-        arr[i][j] = taoBiensoxe();
-        cout << "Gui xe thanh cong tai hang " << i << ", cot " << j << endl;
-    } 
+    {
+        if (arr[i][j] == "")
+        {
+            string biensoxe = taoBiensoxe();
+            cout << biensoxe << endl;
+            arr[i][j] = biensoxe;
+            cout << "Gui xe thanh cong tai hang " << i << ", cot " << j << endl;
+        }
+        else goto retry;
+    }
     else
     {
         cout << "Bai xe da day, khong the gui! \n";
+    }
+}
+
+
+void output_arr()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            cout << arr[i][j] << " ";
+        }
+        cout << endl;
     }
 }
 // for (int i =0, i< n , i++)
@@ -62,35 +81,38 @@ void chiaKhu()
 string taoBiensoxe()
 {
     // tạo chuỗi   trung gian 
-    const string chucai = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
+    const string chucai = "-QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     string bienso;
     //thay đổi giá trị ngẫu nhiên của hàm random
     srand((unsigned int)time(NULL));
     //tạo giá trị cho chuỗi 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 9; i++)
     {
-        if (i != 2)
+        if (i == 2)
         {
-            bienso += chucai[Random(26, 35)];
+            bienso += chucai[0];
+            continue;
         }
-        else
+          
+        if (i == 3)
         {
-            bienso += chucai[Random(0, 25)];
+            bienso += chucai[Random(1, 26)];
+            continue;
         }
+           
+        bienso += chucai[Random(27, 36)];
     }
     return bienso;
 }
-//void time()
-//{
-//    {
-//        // tra ve date/time hien tai dua tren system hien tai
-//        time_t hientai = time(0);
-//        // chuyen doi hientai thanh dang chuoi
-//        char* dt = ctime(&hientai);
-//
-//        cout << "Date va Time dang local la: " << dt << endl;
-//    }
-//}
+
+void time()
+{
+    // tra ve date/time hien tai dua tren system hien tai
+    time_t hientai = time(0);
+    // chuyen doi hientai thanh dang chuoi
+    char* dt = ctime(&hientai);
+    cout << dt << endl;
+}
 
 // Tinh tien xe //
 int sum = 50000, dem = -1;
@@ -111,7 +133,8 @@ void ghiFile()
     btl << taoBiensoxe() << endl;
     btl.close();
 }
-// Chenh lech 
+
+// Chenh lech //
 void diffTime()
 {
     time_t now = time(0);
@@ -131,8 +154,6 @@ void diffTime()
     delete customtime;
     int diff = custom - now;
     cout << "So tien phai tra: " << tien_xe(diff);
-    
-
     
 }
 
@@ -163,12 +184,13 @@ int main()
         switch (key)
         {
         case 1: // Nhap xe
-            chiaKhu();
+            auto_input_arr();
             
             
             break;
         case 2:
-            diffTime();
+            output_arr();
+            
             
             break;
         default:
