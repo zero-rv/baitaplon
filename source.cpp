@@ -18,7 +18,6 @@ void docFile();
 
 //Struct 
 
-
 int Random(int min, int  max)
 {
     return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
@@ -81,17 +80,17 @@ string taoBiensoxe()
     }
     return bienso;
 }
-void time()
-{
-    {
-        // tra ve date/time hien tai dua tren system hien tai
-        time_t hientai = time(0);
-        // chuyen doi hientai thanh dang chuoi
-        char* dt = ctime(&hientai);
-
-        cout << "Date va Time dang local la: " << dt << endl;
-    }
-}
+//void time()
+//{
+//    {
+//        // tra ve date/time hien tai dua tren system hien tai
+//        time_t hientai = time(0);
+//        // chuyen doi hientai thanh dang chuoi
+//        char* dt = ctime(&hientai);
+//
+//        cout << "Date va Time dang local la: " << dt << endl;
+//    }
+//}
 
 // Tinh tien xe //
 int sum = 50000, dem = -1;
@@ -111,6 +110,30 @@ void ghiFile()
     btl.open("baitaplon.txt", ios::app);
     btl << taoBiensoxe() << endl;
     btl.close();
+}
+// Chenh lech 
+void diffTime()
+{
+    time_t now = time(0);
+    int hour, min, sec, day, month, year;
+    cout << "Nhap thoi gian xuat xe (gio, phut, giay, ngay, thang, nam): ";
+    cin >> hour >> min >> sec >> day >> month >> year;
+
+    struct tm *customtime = new tm;
+    customtime->tm_hour = hour;
+    customtime->tm_min = min;
+    customtime->tm_sec = sec;
+    customtime->tm_mday = day;
+    customtime->tm_mon = month - 1;
+    customtime->tm_year = year - 1900;
+    
+    time_t custom = mktime(customtime);
+    delete customtime;
+    int diff = custom - now;
+    cout << "So tien phai tra: " << tien_xe(diff);
+    
+
+    
 }
 
 void docFile()
@@ -141,12 +164,12 @@ int main()
         {
         case 1: // Nhap xe
             chiaKhu();
-            time();
+            
             
             break;
         case 2:
-            time();
-            docFile();
+            diffTime();
+            
             break;
         default:
             cout << "Khong co option nay\n";
