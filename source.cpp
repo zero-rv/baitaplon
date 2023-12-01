@@ -235,7 +235,7 @@ void luuFile(string biensoxe, string time_in, double time_num, int x)
     case 1:
         save1.open("khoiphucbaixe1.txt", ios::app);
         save1 << biensoxe << endl;
-        save1 << time_in << endl;
+        save1 << time_in;
         save1 << time_num << endl;
         save1.close();
         break;
