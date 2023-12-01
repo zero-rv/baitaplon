@@ -60,8 +60,7 @@ string taoBiensoxe()
 }
 
 // GET TIME //
-time_t now = time(0);
-char* dt = ctime(&now);
+
 
 // PARKING LOT //
 string lot_1[3][3], lot_2[3][3], lot_3[3][3];
@@ -114,6 +113,8 @@ void nhapXe(string arr[3][3], string time_in_char[3][3], double time_in_num[3][3
             {
                 if (arr[i][j] == "")
                 {   
+                    time_t now = time(0);
+                    char* dt = ctime(&now);
                     string biensoxe = taoBiensoxe();
                     cout << biensoxe << endl;
                     arr[i][j] = biensoxe;
@@ -145,7 +146,7 @@ void output_arr()
     {
         for (int j = 0; j < 3; j++)
         {
-            cout << lot_1[i][j] << " ";
+            cout << time_in_num_1[i][j] << " ";
         }
         cout << endl;
     }
