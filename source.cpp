@@ -116,11 +116,11 @@ void nhapXe(string arr[3][3], string time_in_char[3][3], double time_in_num[3][3
                     time_t now = time(0);
                     char* dt = ctime(&now);
                     string biensoxe = taoBiensoxe();
-                    cout << biensoxe << endl;
                     arr[i][j] = biensoxe;
                     time_in_char[i][j] = dt;
                     time_in_num[i][j] = now;
                     cout << "Gui xe thanh cong!" << endl;
+                    cout << "Bien so xe: " << biensoxe << endl;
                     cout << "Xe duoc gui vao vi tri " << (char)(i + 65) << j + 1 << endl;
                     cout << "Thoi gian gui xe: " << dt << endl;
                     luuFile(biensoxe, dt, now, x);
