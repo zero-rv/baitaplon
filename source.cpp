@@ -7,20 +7,24 @@
 #include <string>
 #include <utility>
 #include <fstream>
+#include <ctype.h>
 using namespace std;
-
-
+const string chucai = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 /*-------------------------------HAM SU DUNG------------------------------------*/
 int Random(int min, int max);
 string taoBiensoxe();
-string customTime();
-bool isEmpty(string arr[3][3]);
+void inputCustomtime();
+string customTime_char(int &hour, int& min, int& sec, int& day, int& month, int& year);
+unsigned long long customTime_num(int& hour, int& min, int& sec, int& day, int& month, int& year);
+bool isEmpty(string lot[3][3]);
 void park_lot();
-void nhapXe(string arr[3][3], string time_in[3][3], double time_in_num[3][3], int x);
-void luuFile(string biensoxe, string time_in, double time_num, int x);
-void docFile();
-void khoiphucArr();
+void nhapXe(string lot[3][3], string time_in[3][3], unsigned long long time_in_num[3][3], int x);
+void luuFile(string biensoxe, string time_in, unsigned long long time_num, int x);
+void khoiphuc_Arr();
+void luu_Baocao();
+void doc_Baocao();
 void output_arr();
+void findCar();
 void menu();
 void select();
 /*-----------------CTRL + Click DE NHAY TOI HAM DINH NGHIA----------------------*/
@@ -35,12 +39,10 @@ int Random(int min, int  max)
 // BIEN SO XE //
 string taoBiensoxe()
 {
-    // tạo chuỗi   trung gian 
-    const string chucai = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     string bienso;
-    //thay đổi giá trị ngẫu nhiên của hàm random
+    // reset o nho cua Random
     srand((unsigned int)time(NULL));
-    //tạo giá trị cho chuỗi 
+    // tao bien so 
     for (int i = 0; i < 9; i++)
     {
         if (i == 2)
@@ -48,31 +50,26 @@ string taoBiensoxe()
             bienso += '-';
             continue;
         }
-
         if (i == 3)
             bienso += chucai[Random(0, 25)];
         else
             bienso += chucai[Random(26, 35)];
-
     }
-
     return bienso;
 }
 
-// GET TIME //
 
-
-// PARKING LOT //
-string lot_1[3][3], lot_2[3][3], lot_3[3][3];
-string time_in_char_1[3][3], time_in_char_2[3][3], time_in_char_3[3][3];
-double time_in_num_1[3][3], time_in_num_2[3][3], time_in_num_3[3][3];
-bool isEmpty(string arr[3][3])
+/*---------------------------------------------------BAI DO XE-------------------------------------------------------------*/
+string lot_1[3][3], lot_2[3][3], lot_3[3][3]; // Bien so xe _ Bai xe 1, 2, 3
+string time_in_char_1[3][3], time_in_char_2[3][3], time_in_char_3[3][3]; // Thoi gian xe vao dang chuoi _ Bai xe 1, 2, 3 
+unsigned long long time_in_num_1[3][3], time_in_num_2[3][3], time_in_num_3[3][3]; // Thoi gian xe vao dang so _ Bai xe 1, 2, 3
+bool isEmpty(string lot[3][3])
 {
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-            if (arr[i][j] == "")
+            if (lot[i][j] == "")
                 return true;
         }
     }
@@ -102,28 +99,28 @@ void park_lot()
     }
 }
 
-void nhapXe(string arr[3][3], string time_in_char[3][3], double time_in_num[3][3], int x)
+void nhapXe(string lot[3][3], string time_in_char[3][3], unsigned long long time_in_num[3][3], int x)
 {
     bool isParked = false;
-    if (isEmpty(arr))
+    if (isEmpty(lot))
     {
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                if (arr[i][j] == "")
+                if (lot[i][j] == "")
                 {   
                     time_t now = time(0);
                     char* dt = ctime(&now);
                     string biensoxe = taoBiensoxe();
-                    arr[i][j] = biensoxe;
+                    lot[i][j] = biensoxe;
                     time_in_char[i][j] = dt;
                     time_in_num[i][j] = now;
                     cout << "Gui xe thanh cong!" << endl;
                     cout << "Bien so xe: " << biensoxe << endl;
                     cout << "Xe duoc gui vao vi tri " << (char)(i + 65) << j + 1 << endl;
                     cout << "Thoi gian gui xe: " << dt << endl;
-                    luuFile(biensoxe, dt, now, x);
+                    luuFile(lot[i][j], time_in_char[i][j], time_in_num[i][j], x);
                     isParked = true;
                     break;
                 }
@@ -139,7 +136,7 @@ void nhapXe(string arr[3][3], string time_in_char[3][3], double time_in_num[3][3
         cout << "Bai xe da day, khong the gui! \n";
     }
 }
-
+/*----------------------------------------------------------------------------------------------------------------------------*/
 
 void output_arr()
 {
@@ -154,7 +151,7 @@ void output_arr()
 }
 
 
-// Tinh tien xe //
+/* TINH TIEN XE */
 int sum = 50000, dem = -1;
 int tien_xe(int secs)
 {
@@ -167,19 +164,22 @@ int tien_xe(int secs)
     return sum;
 }
 
-//Thoi gian xuat xe
-void timeXuatxe()
+void xuat_xe()
 {
-    
-}
 
-// Chenh lech //
-string customTime()
+}
+/*--------------------------LAY THOI GIAN NHAP VAO--------------------------------*/
+void inputCustomtime()
 {
     int hour, min, sec, day, month, year;
     cout << "Nhap thoi gian xuat xe (gio, phut, giay, ngay, thang, nam): ";
     cin >> hour >> min >> sec >> day >> month >> year;
+    customTime_char(hour, min, sec, day, month, year);
+    customTime_num(hour, min, sec, day, month, year);
+}
 
+string customTime_char(int &hour, int &min, int &sec, int &day, int &month, int &year)
+{    
     struct tm* customtime = new tm;
     customtime->tm_hour = hour;
     customtime->tm_min = min;
@@ -190,46 +190,96 @@ string customTime()
     
     time_t custom = mktime(customtime);
     delete customtime;
-    char* custom_char = ctime(&custom);
+    char *custom_char = ctime(&custom);
     return custom_char;
+}
+
+unsigned long long customTime_num(int &hour, int &min, int &sec, int &day, int &month, int &year)
+{
+    struct tm* customtime = new tm;
+    customtime->tm_hour = hour;
+    customtime->tm_min = min;
+    customtime->tm_sec = sec;
+    customtime->tm_mday = day;
+    customtime->tm_mon = month - 1;
+    customtime->tm_year = year - 1900;
     
+    time_t custom = mktime(customtime);
+    delete customtime;
+    return custom;
+}
+/*---------------------------------------------------------------------------------------------*/
+
+/* TIM XE BANG BIEN SO XE */
+bool isHople(string car)
+{
+    if (car.length() != 9)
+    {
+        cout << "Bien so xe khong hop le! Bien so xe phai co 9 ki tu \n";
+        return false;
+    }
+    if (car[2] != '-')
+    {
+        cout << "Bien so xe khong hop le! Can 1 dau '-' o vi tri so 3 \n";
+        return false;
+    }
+    if (!isupper(car[3]))
+    {
+        cout << "Bien so xe khong hop le! Can 1 chu cai in hoa o vi tri so 4 \n";
+        return false;
+    }
+    return true;
+}
+
+void findCar()
+{
+    bool isFound = false;
+    string car;
+    retry:
+    cout << "Nhap bien so xe muon tim: ";
+    cin >> car;
+    if (!isHople(car))
+    {
+        goto retry;
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (lot_1[i][j] == car)
+            {
+                cout << "Xe dang o bai xe so 1, vi tri " << (char)(i + 65) << j + 1 << endl;
+                isFound = true;
+                break;
+            }
+            
+            if (lot_2[i][j] == car)
+            {
+                cout << "Xe dang o bai xe so 2, vi tri " << (char)(i + 65) << j + 1 << endl;
+                isFound = true;
+                break;
+            }
+        
+            if (lot_3[i][j] == car)
+            {
+                cout << "Xe dang o bai xe so 3, vi tri " << (char)(i + 65) << j + 1 << endl;
+                isFound = true;
+                break;
+            }
+        }
+        if (isFound)
+        {
+            break;
+        }
+    }
+    if (!isFound)
+    {
+        cout << "Khong tim thay xe nay!" << endl;
+    }
 }
 
 /*----------------------File-------------------------*/
-void taoFile()
-{
-    fstream create, create1, create2, create3;
-
-    create.open("baocaohangngay.txt");
-    if (!create.is_open())
-    {
-        create.open("baocaohangngay.txt", ios::out);
-        create.close();
-    }
-
-    create1.open("khoiphucbaixe1.txt");
-    if (!create1.is_open())
-    {
-        create1.open("khoiphucbaixe1.txt", ios::out);
-        create1.close();
-    }
-
-    create2.open("khoiphucbaixe2.txt");
-    if (!create2.is_open())
-    {
-        create2.open("khoiphucbaixe2.txt", ios::out);
-        create2.close();
-    }
-
-    create3.open("khoiphucbaixe3.txt");
-    if (!create3.is_open())
-    {
-        create3.open("khoiphucbaixe3.txt", ios::out);
-        create3.close();
-    }
-}
-
-void luuFile(string biensoxe, string time_in, double time_num, int x)
+void luuFile(string biensoxe, string time_in, unsigned long long time_num, int x)
 {
     ofstream save1, save2, save3;
     switch (x)
@@ -257,50 +307,16 @@ void luuFile(string biensoxe, string time_in, double time_num, int x)
         break;
     }
 }
-void docFile()
-{
-    ifstream in;
-    in.open("baocaohangngay.txt");
-    if (in.is_open())
-    {
-        int total_line = 0, count = 0;
-        string biensoxe, time_in, lines;
-        while (!in.eof())
-        {
-            getline(in, lines);
-            total_line++;
-        }
-        in.clear();
-        in.seekg(0, ios::beg);
-        while (!in.eof())
-        {
-            getline(in, biensoxe);
-            getline(in, time_in);
-            cout << biensoxe << "     " << time_in << endl;
-            count += 2;
-            if (count == total_line - 1)
-            {
-                break;
-            }
-        }
 
-        in.close();
-    }
-    else
-    {
-        cout << "File chua duoc tao, vui long tao file baitaplon.txt \n";
-    }
-}
-
-void khoiphucArr()
+void khoiphuc_Arr()
 {
     string xe1, xe2, xe3, time1, time2, time3;
-    double num1, num2, num3;
+    unsigned long long num1, num2, num3;
     ifstream recover1, recover2, recover3;
     recover1.open("khoiphucbaixe1.txt");
     for (int i = 0; i < 3; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < 3; j++) 
         {
             getline(recover1, xe1);
             lot_1[i][j] = xe1;
@@ -347,6 +363,42 @@ void khoiphucArr()
     
 }
 
+void luu_Baocao()
+{
+    ofstream out;
+    out.open("baocaohangngay.txt");
+
+}
+
+void doc_Baocao()
+{
+    ifstream in;
+    in.open("baocaohangngay.txt");
+    int total_line = 0, count = 0;
+    string biensoxe, time_in, time_out, fee, lines;
+    while (!in.eof())
+    {
+        getline(in, lines);
+        total_line++;
+    }
+    in.clear();
+    in.seekg(0, ios::beg);
+    while (!in.eof())
+    {
+        getline(in, biensoxe);
+        getline(in, time_in);
+        getline(in, time_out);
+        getline(in, fee);
+        cout << biensoxe << "     " << time_in << "     " << time_out << "     " << fee << "VND" << endl;
+        count += 4;
+        if (count == total_line - 3)
+        {
+            break;
+        }
+    }
+    in.close();
+}
+
 void cleanFile()
 {
     fstream clean, clean1, clean2, clean3;
@@ -362,11 +414,9 @@ void cleanFile()
 /*---------------------------------------------------*/
 
 
-
 int main()
 {
-    taoFile();
-    khoiphucArr();
+    khoiphuc_Arr();
     while (true)
     {
         int n;
@@ -406,7 +456,7 @@ void select()
     cin >> choice;
     switch (choice)
     {
-    case 1: //Nhap xe vao bai
+    case 1:
         park_lot();
         break;
     //case 2: //Xuat xe ra bai
@@ -415,9 +465,13 @@ void select()
     //case 3:
     //    docFile();
     //    break;
-    case 4: //Kiem tra mang lot_1
+    case 4:
+        findCar();
+        break;
+    case 5: // In mang de kiem tra
         output_arr();
-    case 5: //Xoa du lieu tat ca file
+        break;
+    case 6: //Xoa du lieu tat ca file
         cleanFile();
         break;
     default:
