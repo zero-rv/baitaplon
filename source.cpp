@@ -14,9 +14,9 @@ struct Baixe
     time_t timeout = 0;
     double tienxe = 0;
 };
-Baixe baixe1[3][4];
-Baixe baixe2[3][4];
-Baixe baixe3[3][4];
+Baixe baixe1[4][5];
+Baixe baixe2[4][5];
+Baixe baixe3[4][5];
 
 /*-------------------------------HAM SU DUNG------------------------------------*/
 int Random(int min, int max);
@@ -24,9 +24,9 @@ string taoBiensoxe();
 void inputCustomtime();
 string customTime_char(int& hour, int& min, int& sec, int& day, int& month, int& year);
 unsigned long long customTime_num(int& hour, int& min, int& sec, int& day, int& month, int& year);
-bool isEmpty(Baixe baixe[3][4]);
+bool isEmpty(Baixe baixe[4][5]);
 void park_lot();
-void nhapXe(Baixe baixe[3][4]);
+void nhapXe(Baixe baixe[4][5]);
 void luuFile();
 void khoiphuc();
 void cleanFile();
@@ -70,11 +70,11 @@ string taoBiensoxe()
 
 
 /*---------------------------------------------------BAI DO XE-------------------------------------------------------------*/
-bool isEmpty(Baixe baixe[3][4])
+bool isEmpty(Baixe baixe[4][5])
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 5; j++)
         {
             if (baixe[i][j].biensoxe == "")
                 return true;
@@ -107,14 +107,14 @@ retry:
 }
 
 /* OPTION 1 */
-void nhapXe(Baixe baixe[3][4])
+void nhapXe(Baixe baixe[4][5])
 {
     bool isParked = false;
     if (isEmpty(baixe))
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (int j = 0; j < 4; j++)
+            for (int j = 0; j < 5; j++)
             {
                 if (baixe[i][j].biensoxe == "")
                 {
@@ -143,9 +143,9 @@ void nhapXe(Baixe baixe[3][4])
 
 void output_arr()
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 5; j++)
         {
             cout << baixe1[i][j].biensoxe << " ";
         }
@@ -211,16 +211,33 @@ unsigned long long customTime_num(int& hour, int& min, int& sec, int& day, int& 
 // BIEN SO XE HOP LE
 bool isHople(string car)
 {
+    // Du 9 ki tu
+    int count = 0;
     if (car.length() != 9)
     {
         cout << "Bien so xe khong hop le! Bien so xe phai co 9 ki tu \n";
         return false;
     }
-    if (car[2] != '-')
+    // So ki tu hop le
+    for (char x : car)
     {
-        cout << "Bien so xe khong hop le! Can 1 dau '-' o vi tri so 3 \n";
+        if (isdigit(x))
+        {
+            count++; 
+        }
+    }
+    if (count < 7)
+    {
+        cout << "Bien so xe khong hop le! Chi duoc ton tai 1 ki tu '-' va 1 chu cai in hoa \n";
         return false;
     }
+    // Ki tu so 3 la '-'
+    if (car[2] != '-')
+    {
+        cout << "Bien so xe khong hop le! Can 1 ki tu '-' o vi tri so 3 \n";
+        return false;
+    }
+    // Ki tu so 4 la chu cai in hoa
     if (!isupper(car[3]))
     {
         cout << "Bien so xe khong hop le! Can 1 chu cai in hoa o vi tri so 4 \n";
@@ -228,6 +245,85 @@ bool isHople(string car)
     }
     return true;
 }
+
+/* OPTION 2 */
+void deleteCar(Baixe baixe[4][5], int &m, int &n)
+{
+    baixe[m][n].biensoxe = "";
+    baixe[m][n].timein = 0;
+}
+
+
+
+void xuatXe()
+{
+    bool isFound = false;
+    int confirm, x = 0, m, n; // x - bai xe, m - so hang, n - so cot
+    string car;
+retry:
+    cout << "Nhap bien so xe muon xuat: ";
+    cin >> car;
+    if (!isHople(car))
+    {
+        goto retry;
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (baixe1[i][j].biensoxe == car || baixe2[i][j].biensoxe == car || baixe3[i][j].biensoxe == car)
+            {
+                cout << "Xe dang o trong bai. ";
+                m = i;
+                n = j;
+                if (baixe1[i][j].biensoxe == car)
+                {
+                    x = 1;
+                }
+                if (baixe2[i][j].biensoxe == car)
+                {
+                    x = 2;
+                }
+                if (baixe3[i][j].biensoxe == car)
+                {
+                    x = 3;
+                }
+                isFound = true;
+                break;
+            }
+        }
+        if (isFound)
+        {
+            break;
+        }
+    }
+    if (isFound)
+    {
+        cout << "Xac nhan xuat xe? (1/0): ";
+        cin >> confirm;
+        if (confirm)
+        {
+            cout << "OK" << endl;
+            switch (x)
+            {
+            case 1:
+                deleteCar(baixe1, m, n);
+                break;
+            case 2:
+                deleteCar(baixe2, m, n);
+                break;
+            case 3:
+                deleteCar(baixe3, m, n);
+                break;
+            }
+        }
+    }
+    else
+    {
+        cout << "Xe khong co trong bai!" << endl;
+    }
+}
+
 /* OPTION 4 */
 void timXe()
 {
@@ -240,9 +336,9 @@ retry:
     {
         goto retry;
     }
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 5; j++)
         {
             if (baixe1[i][j].biensoxe == car)
             {
@@ -272,7 +368,7 @@ retry:
     }
     if (!isFound)
     {
-        cout << "Khong tim thay xe!" << endl;
+        cout << "Khong tim thay xe trong bai!" << endl;
     }
 }
 
@@ -280,12 +376,12 @@ retry:
 void luuFile()
 {
     ofstream save1, save2, save3;
-    save1.open("khoiphucbaixe1.txt");
-    save2.open("khoiphucbaixe2.txt");
-    save3.open("khoiphucbaixe3.txt");
-    for (int i = 0; i < 3; i++)
+    save1.open("khoiphucbaixe1.txt", ios::out);
+    save2.open("khoiphucbaixe2.txt", ios::out);
+    save3.open("khoiphucbaixe3.txt", ios::out);
+    for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 5; j++)
         {
             //Baixe1
             save1 << baixe1[i][j].biensoxe << endl;
@@ -312,9 +408,9 @@ void khoiphuc()
     recover1.open("khoiphucbaixe1.txt");
     recover2.open("khoiphucbaixe2.txt");
     recover3.open("khoiphucbaixe3.txt");
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 5; j++)
         {
             //Baixe1
             getline(recover1, xe);
@@ -419,7 +515,7 @@ int main()
 
 void menu()
 {
-    cout << "                    QUAN LY 3 BAI XE (3 X 3)                      " << endl;
+    cout << "                    QUAN LY 3 BAI XE (4 X 5)                      " << endl;
     cout << " *---------------------------------------------------------------*" << endl;
     cout << " | Option 1 : Gui xe vao bai                                     |" << endl;
     cout << " | Option 2 : Cho xe ra bai, tinh tien gui xe                    |" << endl;
@@ -433,14 +529,15 @@ void select()
     int choice;
     cout << "Moi chon option: ";
     cin >> choice;
+    cout << endl;
     switch (choice)
     {
     case 1:
         park_lot();
         break;
-        //case 2: //Xuat xe ra bai
-        //    customTime();
-        //    break;
+    case 2: //Xuat xe ra bai
+        xuatXe();
+        break;
         //case 3:
         //    docFile();
         //    break;
