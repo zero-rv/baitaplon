@@ -313,13 +313,12 @@ void time_xuatxe(Baixe bx[4][5], int& m, int& n)
     default:
         cout << "Lua chon khong hop le. Vui long nhap lai" << endl;
         goto retry;
-        break;
     }
     time_t lech;
     lech = bx[m][n].timeout - bx[m][n].timein;
     bx[m][n].tienxe = tien_xe(lech);
-    cout << "Xuat xe thanh cong!" << endl;
-    cout << "Xe ra bai luc: " << ctime(&bx[m][n].timeout);
+    cout << endl << "Xuat xe thanh cong!" << endl;
+    cout << "Xe da ra bai luc: " << ctime(&bx[m][n].timeout);
     cout << "So tien phai tra: " << bx[m][n].tienxe << "VND" << endl;
 }
 
@@ -390,6 +389,10 @@ retry:
                 break;
             }
         }
+        else
+        {
+            cout << "Ban da tu choi xuat xe ra bai!" << endl;
+        }
     }
     else
     {
@@ -397,6 +400,10 @@ retry:
         if (_getch() != 27)
         {
             goto retry;
+        }
+        else
+        {
+            cout << "Ban da tu choi nhap lai!" << endl;
         }
     }
 }
