@@ -28,19 +28,18 @@ bool isEmpty(Baixe bx[4][5]);
 void park(Baixe bx[4][5]);
 double tien_xe(time_t secs);
 bool isHople(string car);
-void output_arr();
+void showArr();
 void deleteCar(Baixe bx[4][5], int& m, int& n);
 time_t convertTime(int year, int month, int day, int hour, int minute, int second);
 time_t customTime();
 void time_xuatxe(Baixe bx[4][5], int& m, int& n);
 void luuFile();
 void khoiphuc();
-void luu_Baocao(Baixe bx[4][5], int& m, int& n);
-bool enter();
+void luuBaocao(Baixe bx[4][5], int& m, int& n);
 /*                                 OPTIONS                                      */
 void nhapXe();
 void xuatXe();
-void doc_Baocao();
+void docBaocao();
 void timXe();
 /*                                  MAIN                                        */
 void menu();
@@ -77,7 +76,7 @@ string taoBiensoxe()
 }
 
 
-// Kiem tra bai xe con slot
+// Kiem tra bai xe con vi tri
 bool isEmpty(Baixe bx[4][5])
 {
     for (int i = 0; i < 4; i++)
@@ -115,7 +114,7 @@ retry:
     }
 }
 
-// Nhap xe vao bai
+// Gui xe vao bai
 void park(Baixe bx[4][5])
 {
     if (isEmpty(bx))
@@ -130,7 +129,7 @@ void park(Baixe bx[4][5])
             cout << "Gui xe thanh cong!" << endl;
             cout << "Bien so xe: " << bx[i][j].biensoxe << endl;
             cout << "Xe duoc gui vao vi tri " << (char)(i + 65) << j + 1 << endl;
-            cout << "Thoi gian gui xe: " << ctime(&bx[i][j].timein) << endl;
+            cout << "Thoi gian gui xe: " << ctime(&bx[i][j].timein);
         }
         else
         {
@@ -139,7 +138,7 @@ void park(Baixe bx[4][5])
     }
     else
     {
-        cout << "Bai xe da day, khong the gui! \n";
+        cout << "Bai xe da day, khong the gui!" << endl;
     }
 }
 
@@ -156,7 +155,7 @@ double tien_xe(time_t secs)
     return sum;
 }
 
-// BIEN SO XE HOP LE
+// Kiem tra bien so xe hop le
 bool isHople(string car)
 {
     // Du 9 ki tu
@@ -194,8 +193,8 @@ bool isHople(string car)
     return true;
 }
 
-// In bai xe ra man hinh
-void output_arr()
+// Show bai xe ra man hinh
+void showArr()
 {
     cout << "Bai xe 1" << endl;
     for (int i = 0; i < 4; i++)
@@ -210,7 +209,9 @@ void output_arr()
         }
         cout << endl;
     }
-    cout << endl << "Bai xe 2" << endl;
+    cout << endl;
+
+    cout << "Bai xe 2" << endl;
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 5; j++)
@@ -223,7 +224,9 @@ void output_arr()
         }
         cout << endl;
     }
-    cout << endl << "Bai xe 3" << endl;
+    cout << endl;
+
+    cout << "Bai xe 3" << endl;
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 5; j++)
@@ -236,6 +239,7 @@ void output_arr()
         }
         cout << endl;
     }
+    cout << endl;
 }
 
 // Xoa thong tin xe
@@ -248,7 +252,7 @@ void deleteCar(Baixe bx[4][5], int& m, int& n)
 }
 
 
-// Chuyen doi thoi gian nhap vao thanh so giay
+// Chuyen doi thoi gian nhap vao
 time_t convertTime(int year, int month, int day, int hour, int minute, int second)
 {
     // Struct luu thong tin ve thoi gian
@@ -268,7 +272,7 @@ time_t convertTime(int year, int month, int day, int hour, int minute, int secon
     return time;
 }
 
-// Nhap thoi gian bat ki
+// Nhap thoi gian
 time_t customTime()
 {
     int year, month, day, hour, minute, second;
@@ -288,16 +292,16 @@ time_t customTime()
 // Chon thoi gian xuat xe
 void time_xuatxe(Baixe bx[4][5], int& m, int& n)
 {
-    int x;
+    char x;
     retry:
     cout << "1: Lay thoi gian hien tai | 0: Lay thoi gian nhap vao: ";
     cin >> x;
     switch (x)
     {
-    case 1:
+    case '1':
         bx[m][n].timeout = time(0);
         break;
-    case 0:
+    case '0':
         try_again:
         bx[m][n].timeout = customTime();
         if (bx[m][n].timeout < time(0))
@@ -364,24 +368,24 @@ retry:
     }
     if (isFound)
     {
-        cout << "Xac nhan xuat xe? (Enter/ESC)" << endl;
-        if (enter())
+        cout << "Xac nhan xuat xe? (Key/ESC)" << endl;
+        if (_getch() != 27)
         {
             switch (x)
             {
             case 1:
                 time_xuatxe(baixe1, m, n);
-                luu_Baocao(baixe1, m, n);
+                luuBaocao(baixe1, m, n);
                 deleteCar(baixe1, m, n);
                 break;
             case 2:
                 time_xuatxe(baixe2, m, n);
-                luu_Baocao(baixe2, m, n);
+                luuBaocao(baixe2, m, n);
                 deleteCar(baixe2, m, n);
                 break;
             case 3:
                 time_xuatxe(baixe3, m, n);
-                luu_Baocao(baixe3, m, n);
+                luuBaocao(baixe3, m, n);
                 deleteCar(baixe3, m, n);
                 break;
             }
@@ -389,8 +393,8 @@ retry:
     }
     else
     {
-        cout << "Xe khong co trong bai! Ban co muon nhap lai khong? (Enter/ESC)" << endl;
-        if (enter())
+        cout << "Xe khong co trong bai! Ban co muon nhap lai khong? (Key/ESC)" << endl;
+        if (_getch() != 27)
         {
             goto retry;
         }
@@ -445,7 +449,7 @@ retry:
     }
 }
 
-/*----------------------File-------------------------*/
+/*-------------------------File----------------------------*/
 void luuFile()
 {
     ofstream save1, save2, save3;
@@ -510,10 +514,14 @@ void khoiphuc()
     recover3.close();
 }
 
-void luu_Baocao(Baixe bx[4][5], int& m, int& n)
+void luuBaocao(Baixe bx[4][5], int& m, int& n)
 {
     ofstream save;
     save.open("baocaohangngay.txt", ios::app);
+    if (!save.is_open())
+    {
+        save.open("baocaohangngay.txt", ios::out);
+    }
     save << bx[m][n].biensoxe << endl;
     save << ctime(&bx[m][n].timein);
     save << ctime(&bx[m][n].timeout);
@@ -523,7 +531,7 @@ void luu_Baocao(Baixe bx[4][5], int& m, int& n)
 }
 
 /* OPTION 3 */
-void doc_Baocao()
+void docBaocao()
 {
     ifstream in;
     in.open("baocaohangngay.txt");
@@ -538,6 +546,7 @@ void doc_Baocao()
     in.seekg(0, ios::beg);
     if (total_line != 1)
     {
+        cout << "Bien so xe      |       Thoi gian vao                  |       Thoi gian ra                   |       Tien gui xe" << endl;
         while (!in.eof())
         {
             getline(in, biensoxe);
@@ -545,11 +554,11 @@ void doc_Baocao()
             getline(in, time_out);
             in >> fee;
             in.ignore();
-            cout << "Bien so xe      |       Thoi gian vao                  |       Thoi gian ra                   |       Tien gui xe" << endl;
             cout << biensoxe << "       |       " << time_in << "       |       " << time_out << "       |       " << fee << "VND" << endl;
             count += 4;
             if (count >= total_line - 3)
             {
+                cout << "Tong so xe da gui: " << total_line / 4 << endl;
                 break;
             }
         }
@@ -560,7 +569,7 @@ void doc_Baocao()
     }
     in.close();
 }
-/*---------------------------------------------------*/
+/*---------------------------------------------------------*/
 
 
 int main()
@@ -572,7 +581,7 @@ int main()
         menu();
         select();
         cout << endl << "Nhan phim bat ki de tiep tuc hoac ESC de thoat chuong trinh" << endl;
-    } while (enter());
+    } while (_getch() != 27);
     luuFile();
     cout << "Ban da thoat chuong trinh!" << endl;
     return 0;
@@ -601,29 +610,19 @@ void select()
         nhapXe();
         break;
     case 2: //Xuat xe ra bai
-        output_arr();
+        showArr();
         xuatXe();
         break;
-    case 3:// In ra bao cao
-        doc_Baocao();
+    case 3: // In ra bao cao
+        docBaocao();
         break;
-    case 4:// Tim xe trong bai
+    case 4: // Tim xe trong bai
         timXe();
         break;
     case 100: // In mang de kiem tra
-        output_arr();
+        showArr();
         break;
     default:
         cout << "Khong co option nay!" << endl;
     }
 }
-
-bool enter()
-{
-    if (_getch() == 27) // ESC = 27
-    {
-        return false;
-    }
-    return true;
-}
-
